@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Générateur de scénarios – 36 situations</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+}
+button {
+  display: block;
+  margin: 1rem auto;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  background: #0078ff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #005fcc;
+}
+.acte {
+  margin-top: 1rem;
+}
+.scenario-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>🎭 Générateur de scénario<br>36 situations dramatiques</h1>
+  <button onclick="genererScenario()">🎲 Générer un scénario</button>
+  <div id="resultat"></div>
+</div>
+
+<script>
+/* ==========================
+   1. OUTILS DE BASE
+========================== */
+
+function aleatoire(liste) {
+  return liste[Math.floor(Math.random() * liste.length)];
+}
+
+function remplir(template) {
+  return template.replace(/\{(\w+)\}/g, (_, role) => {
+    return roles[role] ? aleatoire(roles[role]) : `{${role}}`;
+  });
+}
+
+/* ==========================
+   2. LES 36 SITUATIONS
+========================== */
+
+const situations = [
+  { title:"La Supplique", pitch:"Un {Suppliant} implore {Autorité} de le protéger contre {Persécuteur}." },
+  { title:"La Libération", pitch:"{Sauveur} tente de délivrer {Victime} des mains de {Oppresseur}." },
+  { title:"Crime poursuivi par la vengeance", pitch:"{Vengeur} traque {Coupable} pour venger {Victime}." },
+  { title:"Vengeance familiale", pitch:"{Parent} cherche à venger {Victime} tuée par {Coupable}." },
+  { title:"La Poursuite", pitch:"{Poursuivant} traque {Fuyard} à travers {Lieu}." },
+  { title:"Le Désastre", pitch:"{Héros} voit sa vie bouleversée par {Catastrophe} causée par {Responsable}." },
+  { title:"À la merci d’un plus fort", pitch:"{Faible} est opprimé par {Oppresseur}." },
+  { title:"La Révolte", pitch:"{Chef} mène {Groupe} contre {Autorité}." },
+  { title:"Entreprise audacieuse", pitch:"{Héros} tente une mission dangereuse pour obtenir {Objectif}." },
+  { title:"L’Enlèvement", pitch:"{Victime} est enlevé(e) par {Agresseur}." },
+  { title:"L’Énigme", pitch:"{Enquêteur} cherche à résoudre {Mystère}." },
+  { title:"Obtenir", pitch:"{Demandeur} veut s’emparer de {Objet} détenu par {Opposant}." },
+  { title:"Haine entre proches", pitch:"{Proche1} et {Proche2} se déchirent." },
+  { title:"Rivalité entre proches", pitch:"{Rival1} affronte {Rival2} pour {Enjeu}." },
+  { title:"Adultère meurtrier", pitch:"{Coupable} complote contre {Victime} par passion." },
+  { title:"La Folie", pitch:"{Personnage} sombre dans la folie à cause de {Cause}." },
+  { title:"Imprudence fatale", pitch:"{Imprudent} provoque un désastre par {Erreur}." },
+  { title:"Crime involontaire", pitch:"{Auteur} cause la mort de {Victime} sans le vouloir." },
+  { title:"Meurtre d’un proche", pitch:"{Auteur} tue accidentellement {Proche}." },
+  { title:"Sacrifice pour un idéal", pitch:"{Héros} sacrifie {CeQuiCompte} pour {Ideal}." },
+  { title:"Sacrifice pour les proches", pitch:"{Héros} renonce à {CeQuiCompte} pour sauver {Proche}." },
+  { title:"Tout sacrifier pour une passion", pitch:"{Passionne} détruit sa vie pour {Passion}." },
+  { title:"Choix impossible", pitch:"{Héros} doit choisir entre {Choix1} et {Choix2}." },
+  { title:"Rivalité inégale", pitch:"{Faible} affronte {Fort}." },
+  { title:"Adultère", pitch:"{Amant} trompe {Trompe} avec {Amante}." },
+  { title:"Crime d’amour", pitch:"{Amoureux} commet un crime pour {Aime}." },
+  { title:"Déshonneur d’un proche", pitch:"{Decouvreur} découvre le secret honteux de {Proche}." },
+  { title:"Amour contrarié", pitch:"{Amoureux1} et {Amoureux2} sont séparés par {Obstacle}." },
+  { title:"Aimer un ennemi", pitch:"{Amoureux} tombe amoureux de {Ennemi}." },
+  { title:"Ambition", pitch:"{Ambitieux} est prêt à tout pour {But}." },
+  { title:"Conflit avec une divinité", pitch:"{Mortel} défie {Divinite}." },
+  { title:"Jalousie injustifiée", pitch:"{Jaloux} soupçonne {Innocent}." },
+  { title:"Erreur judiciaire", pitch:"{Innocent} est accusé à tort." },
+  { title:"Remords", pitch:"{Coupable} est rongé par la culpabilité." },
+  { title:"Retrouver un être cher", pitch:"{Chercheur} parcourt {Lieu} pour retrouver {Disparu}." },
+  { title:"Perte des proches", pitch:"{Survivant} doit vivre après la perte de {Proche}." }
+];
+
+/* ==========================
+   3. STRUCTURE EN 5 ACTES
+========================== */
+
+const actes = [
+  "ACTE I – Situation initiale : {Heros} mène une vie fragile jusqu’à ce que {Declencheur} survienne.",
+  "ACTE II – L’appel : face à {Probleme}, {Heros} n’a d’autre choix que d’agir.",
+  "ACTE III – Les épreuves : {Obstacle} et {Revelation} mettent tout en péril.",
+  "ACTE IV – Le point de rupture : {Antagoniste} force {Heros} à faire un choix irréversible.",
+  "ACTE V – Dénouement : après {Decision}, le destin de {Heros} est scellé."
+];
+
+/* ==========================
+   4. BANQUE DE RÔLES
+========================== */
+
+const roles = {
+  Heros:["chevalier déchu","érudite audacieuse","mercenaire fatigué","orphelin ambitieux"],
+  Antagoniste:["seigneur noir","culte ancien","tyran paranoïaque"],
+  Suppliant:["paysan","réfugié","noble ruiné"],
+  Autorité:["roi","conseil","empire"],
+  Persécuteur:["brigands","monstre","armée ennemie"],
+  Victime:["enfant","héritier","village"],
+  Sauveur:["aventurier","rebelle","magicien"],
+  Oppresseur:["dictateur","secte"],
+  Vengeur:["justicier","ancien soldat"],
+  Coupable:["assassin","traître"],
+  Parent:["père","mère"],
+  Poursuivant:["chasseur","garde"],
+  Fuyard:["voleur","fugitif"],
+  Lieu:["cité en ruine","forêt maudite","désert interdit"],
+  Catastrophe:["invasion","rituel raté"],
+  Responsable:["roi fou","mage noir"],
+  Objectif:["artefact","vérité","trésor"],
+  Declencheur:["une trahison","une attaque","une révélation"],
+  Probleme:["une menace imminente","une guerre secrète"],
+  Obstacle:["une trahison","une perte terrible"],
+  Revelation:["un secret du passé","la vraie nature de l’ennemi"],
+  Decision:["un sacrifice","une fuite","une victoire amère"],
+  CeQuiCompte:["sa vie","son honneur","son amour"],
+  Ideal:["la liberté","la justice"],
+  Proche:["sœur","mentor","enfant"],
+  Passion:["le pouvoir","la connaissance"],
+  Choix1:["sauver un proche"],
+  Choix2:["sauver le monde"],
+  Fort:["seigneur de guerre"],
+  Faible:["rebelle isolé"],
+  Amoureux:["guerrier","espion"],
+  Aime:["princesse","ennemi juré"],
+  Ambitieux:["noble","général"],
+  But:["le trône","l’immortalité"],
+  Mortel:["héros orgueilleux"],
+  Divinite:["dieu ancien"],
+  Jaloux:["époux","allié"],
+  Innocent:["compagnon fidèle"],
+  Chercheur:["aventurier","mère désespérée"],
+  Disparu:["enfant perdu","ancien amour"],
+  Survivant:["dernier membre d’une famille"]
+};
+
+/* ==========================
+   5. GÉNÉRATION FINALE
+========================== */
+
+function genererScenario() {
+  const situation = aleatoire(situations);
+  let html = `<div class="scenario-title">${situation.title}</div>`;
+  html += `<p><strong>Pitch :</strong> ${remplir(situation.pitch)}</p>`;
+
+  actes.forEach(a => {
+    html += `<div class="acte">${remplir(a)}</div>`;
+  });
+
+  document.getElementById("resultat").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
